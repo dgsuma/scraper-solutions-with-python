@@ -1,0 +1,66 @@
+# Python-generated files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Build / packaging
+build/
+dist/
+wheels/
+*.egg-info/
+.eggs/
+*.egg
+MANIFEST
+
+# Virtual environments
+.venv/
+venv/
+env/
+ENV/
+
+# Environment / secrets
+.env
+.env.*
+!.env.example
+
+# Pip / Python tooling
+pip-wheel-metadata/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+.tox/
+.nox/
+
+# Jupyter notebooks
+.ipynb_checkpoints/
+
+# VS Code
+.vscode/
+
+# Windows / macOS junk files
+Thumbs.db
+Desktop.ini
+.DS_Store
+
+# Logs
+*.log
+logs/
+
+# Local command/history notes
+commands.txt
+
+# SQLite / local databases
+*.sqlite
+*.sqlite3
+*.db
+
+# Scraper output files
+output/
+outputs/
+downloads/
+data/
+*.csv
+*.xlsx
+*.jsonl
