@@ -13,7 +13,8 @@ async def scrape_booking():
     try:
         async with async_playwright() as p:
             try:
-                # Connect via CDP (Evomi) WSS = Web Socket Secure
+                # Connect via CDP (Evomi) 
+                # WSS stands for = Web Socket Secure
                 browser_url = f"wss://browser.evomi.com?key={os.getenv('API_KEY_BROWSER')}"
 
                 browser = await p.chromium.connect_over_cdp(browser_url)
