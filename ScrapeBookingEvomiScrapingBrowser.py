@@ -24,8 +24,12 @@ async def scrape_booking():
                 if not api_key:
                     raise ValueError("API_KEY_BROWSER is missing. Add it to your .env file.")
                 
-                """ You are not launching Chrome locally. You are connecting to Evomi’s Scraping Browser, 
-                which is a remote hardened Chromium browser controlled through CDP """
+                """ 
+                You are not launching Chrome locally. You are connecting to Evomi’s Scraping Browser, 
+                which is a remote hardened Chromium browser controlled through CDP (Chrome DevTools Protocol). 
+                Evomi says this browser product includes remote Chromium, anti-bot/fingerprint handling, 
+                CAPTCHA/Turnstile handling, and integrated proxies. 
+                """
                 browser_url = f"wss://browser.evomi.com?key={api_key}&os=windows&proxy_country=US&adblock=true"
                 browser = await p.chromium.connect_over_cdp(browser_url)
                 #----------------------------------------
@@ -35,13 +39,15 @@ async def scrape_booking():
             except Exception as e:
                 print(f"[ERROR] Failed to launch browser: {e}")
                 return []
-
+            
+            # Opens Booking.com search page
             query = 'New York'
             encoded_query = urllib.parse.quote(query)
             url = f"https://www.booking.com/searchresults.html?ss={encoded_query}"
 
             # Navigate
             try:
+                # Then Playwright opens it:
                 response = await page.goto(url, wait_until="domcontentloaded", timeout=60000)
                 status = response.status if response else "No response"
                 print(f"HTTP Status: {status}")
@@ -51,6 +57,7 @@ async def scrape_booking():
 
             # Cookie popup
             try:
+                # Accepts cookie popup if it appears.
                 await page.wait_for_selector('#onetrust-accept-btn-handler', timeout=5000)
                 await page.click('#onetrust-accept-btn-handler')
             except Exception:
