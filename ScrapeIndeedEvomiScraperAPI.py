@@ -23,8 +23,8 @@ def display_jobs_clean(jobs):
     
     # Table header
     header = f"{'TITLE':<{t_width}} | {'COMPANY':<{c_width}} | {'LOCATION':<{l_width}} | {'SALARY':<{s_width}} | {'POSTED-DATE':<{p_width}}"
-    diveder = '-' * len(header)
+    divider = '-' * len(header)
     
-    print("\n" + diveder)
+    print("\n" + divider)
     print(header)
-    print(diveder)
+    print(divider)
