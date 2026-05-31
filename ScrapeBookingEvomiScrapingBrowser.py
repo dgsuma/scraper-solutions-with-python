@@ -16,8 +16,17 @@ async def scrape_booking():
                 # Connect via CDP (Evomi) 
                 # CDP stands for = Chrome DevTools Protocol, it's a low-level protocol used by tools like Playwright to control browsers. Evomi provides a CDP endpoint that allows you to connect to their browser infrastructure securely using WebSockets.
                 # WSS stands for = Web Socket Secure
-                browser_url = f"wss://browser.evomi.com?key={os.getenv('API_KEY_BROWSER')}"
+                
+                # browser_url = f"wss://browser.evomi.com?key={os.getenv('API_KEY_BROWSER')}"
+                
+                #----------------------------------------
+                api_key = os.getenv("API_KEY_BROWSER")
 
+                if not api_key:
+                    raise ValueError("API_KEY_BROWSER is missing. Add it to your .env file.")
+
+                browser_url = f"wss://browser.evomi.com?key={api_key}&os=windows&proxy_country=US&adblock=true"
+                #----------------------------------------
                 browser = await p.chromium.connect_over_cdp(browser_url)
 
                 # Set up context and page
