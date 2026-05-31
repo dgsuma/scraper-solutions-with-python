@@ -28,3 +28,22 @@ def display_jobs_clean(jobs):
     print("\n" + divider)
     print(header)
     print(divider)
+    
+    # Table rows
+    for job in jobs[:10]:
+        # We use .get() and slicing [0:width-3] to ensure long text doesn't break the table
+        title = (job.get('jobTitle') or 'N/A')
+        title = (title[:t_width-3] + '...') if len(title) > t_width else title
+
+        company = (job.get('company') or 'N/A')
+        company = (company[:c_width-3] + '...') if len(company) > c_width else company
+
+        location = (job.get('location') or 'N/A')
+        location = (location[:l_width-3] + '...') if len(location) > l_width else location
+
+        salary = str(job.get('salary', 'Not listed'))
+        salary = (salary[:s_width-3] + '...') if len(salary) > s_width else salary
+
+        posted = (job.get('postedDate', 'Unknown'))
+
+        print(f"{title:<{t_width}} | {company:<{c_width}} | {location:<{l_width}} | {salary:<{s_width}} | {posted:<{p_width}}")
