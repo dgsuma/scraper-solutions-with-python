@@ -23,11 +23,12 @@ async def scrape_booking():
 
                 if not api_key:
                     raise ValueError("API_KEY_BROWSER is missing. Add it to your .env file.")
-
+                
+                """ You are not launching Chrome locally. You are connecting to Evomi’s Scraping Browser, 
+                which is a remote hardened Chromium browser controlled through CDP """
                 browser_url = f"wss://browser.evomi.com?key={api_key}&os=windows&proxy_country=US&adblock=true"
-                #----------------------------------------
                 browser = await p.chromium.connect_over_cdp(browser_url)
-
+                #----------------------------------------
                 # Set up context and page
                 context = await browser.new_context(viewport={'width': 1280, 'height': 800})
                 page = await context.new_page()
