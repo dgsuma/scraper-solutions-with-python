@@ -47,3 +47,64 @@ def display_jobs_clean(jobs):
         posted = (job.get('postedDate', 'Unknown'))
 
         print(f"{title:<{t_width}} | {company:<{c_width}} | {location:<{l_width}} | {salary:<{s_width}} | {posted:<{p_width}}")
+        
+        print(divider)
+        print(f"Total results: {len(jobs)}\n")
+        
+    def scrape_indeed(html):
+        soup = BeautifulSoup(html, 'html.parser')
+        jobs = []
+        
+        # 1. Locate the script tag containing the initial data
+        # look for script with id 'mosaic-data' or containing 'window._initialData' 
+        script_tag = soup.find('script', id='mosaic-data') or \
+                    soup.find('script', string=re.compile(r'window\._initialData'))
+        if script_tag and script_tag.string:
+            script_content = script_tag.string
+            try:
+                # try multiple patterns (mimicking your js regex)
+                match = re.search(r'window\._initialData\s*=\s*({.*?});', script_content, re.DOTALL)
+                
+                if not match:
+                    # Fallback pattern
+                    match = re.search(r'({.*"jobData".*})', script_content, re.DOTALL)
+                    
+                if not match:
+                    raise ValueError("JSON pattern not found in script")
+                
+                json_raw = match.group(1)
+                data = json.loads(json_raw) 
+                
+                # Navigate the JSON structure with safe gets
+                # Python's dict.get() or nested access
+                job_list = (data.get('hostQuerExecutionResult', {})
+                            .get('data', {})
+                            .get('jobData', {})
+                            .get('results', [])) or \
+                            data.get('jobData', {}).get('results', [])
+                
+                for item in job_list:
+                    job = item.get('job', {})
+                    comp = job.get('compensation', {}).get('inferredPay', {})
+                    
+                    #Handle date conversion
+                    pub_date = job.get('datePublished')
+                    formatted_date = 'Unknown'
+                    if pub_date:
+                        try:
+                            # Assumes pub_date is in ms or a timestamp. adjust as needed
+                            formatted_date = datetime.fromtimestamp(pub_date / 1000.0).strftime('%m/%d/%Y')
+                        except: 
+                            formatted_date = str(pub_date)
+                            
+                    jobs.append({
+                        'jobTitle': job.get('title'),
+                        'company': job.get('sourceEmployer'),
+                        'location': job.get('location', {}).get('fullAddress'),
+                        'salary': comp.get('basePay', 'Not listed'),
+                        'jobUrl': f"https://www.indeed.com/viewjob?jk={job.get('key')}",
+                        'postedDate': formatted_date
+                    })
+                    
+            except Exception as e:
+                print(f"Failed to parse internal JSON data: {e}")
