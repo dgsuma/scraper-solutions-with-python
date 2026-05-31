@@ -21,3 +21,10 @@ def display_jobs_clean(jobs):
     s_width = 15 # Salary
     p_width = 12 # Posted Date
     
+    # Table header
+    header = f"{'TITLE':<{t_width}} | {'COMPANY':<{c_width}} | {'LOCATION':<{l_width}} | {'SALARY':<{s_width}} | {'POSTED-DATE':<{p_width}}"
+    diveder = '-' * len(header)
+    
+    print("\n" + diveder)
+    print(header)
+    print(diveder)
