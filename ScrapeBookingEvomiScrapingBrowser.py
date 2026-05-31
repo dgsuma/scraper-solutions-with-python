@@ -13,8 +13,7 @@ async def scrape_booking():
     try:
         async with async_playwright() as p:
             try:
-                # Connect via CDP (Evomi) 
-                # CDP stands for = Chrome DevTools Protocol, it's a low-level protocol used by tools like Playwright to control browsers. Evomi provides a CDP endpoint that allows you to connect to their browser infrastructure securely using WebSockets.
+                # Connect via CDP (Evomi). CDP stands for = Chrome DevTools Protocol, it's a low-level protocol used by tools like Playwright to control browsers. Evomi provides a CDP endpoint that allows you to connect to their browser infrastructure securely using WebSockets.
                 # WSS stands for = Web Socket Secure
                 
                 # browser_url = f"wss://browser.evomi.com?key={os.getenv('API_KEY_BROWSER')}"
