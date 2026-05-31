@@ -108,3 +108,33 @@ def display_jobs_clean(jobs):
                     
             except Exception as e:
                 print(f"Failed to parse internal JSON data: {e}")
+                
+        # 4. Fallback: Manual Selector Extraction (BeautifulSoup)
+        if not jobs:
+            for el in soup.select('.job_seen_beacon'):
+                jobs.append({
+                    'jobTitle': el.select_one('h2.jobTitle span').get_text(strip=True) if el.select_one('h2.jobTitle span') else el.select_one('h2.jobTitle').get_text(strip=True),
+                    'company': el.select_one('[data-testid="company-name"]').get_text(strip=True) if el.select_one('.companyName') else 'N/A',
+                    'location': el.select_one('[data-testid="text-location"]').get_text(strip=True) if el.select_one('[data-testid="text-location"]') else 'N/A',
+                    'summary': el.select_one('.jobMetaDataGroup').get_text(strip=True) if el.select_one('.jobMetaDataGroup') else 'N/A',
+                })
+        return jobs
+    
+    def main():
+        endpoint = os.getenv('EVOMI_ENDPOINT')
+        api_key = os.getenv('API_KEY')
+        
+        payload = {
+            'url': 'https://www.indeed.com/jobs?q=software+developer&l=New%20York%2C%20NY'
+            # 'url': 'https://www.indeed.com/jobs?q=software+developer&l=Chicago%2C+IL'
+            # 'url': 'https://www.indeed.com/jobs?q=software+developer&l=Las+Vegas'
+        }
+        
+        headers = {
+            'x-api-key': api_key,
+            'Content-Type': 'application/json',
+            'User-Agent': "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
+                        "(KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36",
+            'referrer': "https://www.indeed.com/"
+        }
+            
