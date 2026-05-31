@@ -61,10 +61,12 @@ async def scrape_booking():
                 await page.wait_for_selector('#onetrust-accept-btn-handler', timeout=5000)
                 await page.click('#onetrust-accept-btn-handler')
             except Exception:
+                # If the cookie button is not there, it just prints: [INFO] No cookie popup found
                 print("[INFO] No cookie popup found")
 
             # Wait for content
             try:
+                # This waits until Booking.com hotel cards appear. If they do not appear, the script returns an empty list.
                 await page.wait_for_selector('[data-testid="property-card"]', timeout=15000)
             except Exception as e:
                 print(f"[ERROR] Property cards not found: {e}")
@@ -72,6 +74,7 @@ async def scrape_booking():
 
             # Scroll
             try:
+                # The script scrolls down to trigger lazy-loaded content: Then it does a JavaScript auto-scroll.
                 await page.mouse.wheel(0, 4000)
                 await asyncio.sleep(2)
 
@@ -111,6 +114,7 @@ async def scrape_booking():
 
                 for card in cards:
                     try:
+                        # Then for each card it extracts: name_el & rating_el
                         name_el = card.select_one('[data-testid="title"]')
                         rating_el = card.select_one('[data-testid="review-score"]')
 
@@ -137,7 +141,8 @@ async def scrape_booking():
             for i, result in enumerate(results, 1):
                 name = result.get("name") or "N/A"
                 rating = result.get("rating") or "No rating"
-
+                
+                # Finally it prints like this: ⭐ Rating: 8.7 Excellent
                 print(f"\n[{i}] {name}")
                 print(f"    ⭐ Rating: {rating}")
 
