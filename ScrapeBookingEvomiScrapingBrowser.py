@@ -2,8 +2,8 @@ import asyncio
 import os
 import urllib.parse
 from playwright.async_api import async_playwright
-from dotenv import load_dotenv # type: ignore
 from bs4 import BeautifulSoup  # pip install beautifulsoup4
+from dotenv import load_dotenv # type: ignore (Loads secret API key from .env)
 # Load environment variables from .env
 load_dotenv()
 
@@ -20,7 +20,7 @@ async def scrape_booking():
                 # browser_url = f"wss://browser.evomi.com?key={os.getenv('API_KEY_BROWSER')}"
                 
                 #----------------------------------------
-                api_key = os.getenv("API_KEY_BROWSER")
+                api_key = os.getenv("API_KEY_BROWSER")  # code expects this secret: API_KEY_BROWSER=your_evomi_api_key_here
 
                 if not api_key:
                     raise ValueError("API_KEY_BROWSER is missing. Add it to your .env file.")
