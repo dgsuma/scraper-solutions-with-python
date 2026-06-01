@@ -51,7 +51,7 @@ def display_jobs_clean(jobs):
         print(divider)
         print(f"Total results: {len(jobs)}\n")
         
-    def scrape_indeed(html):
+def scrape_indeed(html):
         soup = BeautifulSoup(html, 'html.parser')
         jobs = []
         
@@ -120,7 +120,7 @@ def display_jobs_clean(jobs):
                 })
         return jobs
     
-    def main():
+def main():
         endpoint = os.getenv('EVOMI_ENDPOINT')
         api_key = os.getenv('API_KEY')
         
@@ -134,7 +134,25 @@ def display_jobs_clean(jobs):
             'x-api-key': api_key,
             'Content-Type': 'application/json',
             'User-Agent': "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
-                        "(KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36",
+                        "(KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
             'referrer': "https://www.indeed.com/"
         }
+        
+        try:
+            response = requests.post(endpoint, json=payload, headers=headers)
+            print(f"HTTP Status: {response.status_code}")
+            print(f"HTTP Message: {response.reason}")
+            
+            html = response.text
+            jobs = scrape_indeed(html)
+            
+            display_jobs_clean(jobs)
+            
+        except Exception as e:
+            print(f"Request failed: {e}")
+            
+if __name__ == "__main__":
+    main()
+            
+            
             
