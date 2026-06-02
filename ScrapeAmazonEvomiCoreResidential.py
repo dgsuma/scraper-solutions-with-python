@@ -118,3 +118,15 @@ def fetch_amazon_books(query):
         raise Exception("Amazon CAPTCHA detected")
 
     return parse_amazon_html(response.text, query)
+
+def main():
+    try:
+        query = "Java"
+
+        results = fetch_amazon_books(query)
+
+        print_results(results)
+
+
+    except Exception as error:
+        print("❌ Error fetching books:", str(error))
