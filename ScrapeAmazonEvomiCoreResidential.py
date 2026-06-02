@@ -87,3 +87,34 @@ def parse_amazon_html(html, search_term):
         })
 
     return results   
+
+def fetch_amazon_books(query):
+    base_url = os.getenv("BASE_URL_AMAZON")
+    page_url = f"{base_url}/s?k={query}&i=stripbooks"
+
+    print(page_url)
+    print("Host:", os.getenv("EVOMI_PROXY_ENDPOINT_HOST"))
+
+    proxies = {
+        "http": f"http://{os.getenv('USER_NAME')}:{os.getenv('PASSWORD')}@{os.getenv('EVOMI_PROXY_ENDPOINT_HOST')}:1000",
+        "https": f"http://{os.getenv('USER_NAME')}:{os.getenv('PASSWORD')}@{os.getenv('EVOMI_PROXY_ENDPOINT_HOST')}:1000",
+    }
+    headers = {
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
+                    "(KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+        "Accept-Language": "en-GB,en-US;q=0.9,en;q=0.8",
+        "Accept-Encoding": "gzip, deflate, br",
+        "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8",
+        "Connection": "keep-alive",
+        "Upgrade-Insecure-Requests": "1",
+        "referer": "https://www.amazon.com/"
+    }   
+
+    response = requests.get(page_url, proxies=proxies, headers=headers)
+    print(f"HTTP Status: {response.status_code}")
+    print(f"HTTP Message: {response.reason}")
+
+    if "Something went wrong" in response.text:
+        raise Exception("Amazon CAPTCHA detected")
+
+    return parse_amazon_html(response.text, query)
